@@ -6,3 +6,5 @@
 これにより、インベントリを開くことなく、全ての所持アイテムにアクセスすることができます。
 
 ![Demo](./readme_img/demo.gif)
+
+Tested Minecraft Versions: 1.11
