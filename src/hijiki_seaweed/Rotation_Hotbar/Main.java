@@ -44,7 +44,7 @@ public class Main extends JavaPlugin implements Listener
 
 		if( !Config.isSet( "RotationMessage" ) )
 		{
-			getConfig().set( "RotationMessage", "'&7&lホットバーをローテーションしました。'" );
+			getConfig().set( "RotationMessage", "&7&lホットバーをローテーションしました。" );
 			c.sendMessage( "config.yml に RotationMessage が存在しなかったため追加しました。" );
 		}
 
