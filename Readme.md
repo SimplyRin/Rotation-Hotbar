@@ -7,4 +7,4 @@
 
 ![Demo](./readme_img/demo.gif)
 
-Tested Minecraft Versions: 1.11
+Tested Minecraft Versions: 1.12.2
