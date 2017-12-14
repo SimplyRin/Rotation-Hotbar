@@ -39,17 +39,17 @@ public class Main extends JavaPlugin implements Listener {
 	 */
 	public void onEnable() {
 		this.saveDefaultConfig();
-		ConsoleCommandSender c = Bukkit.getConsoleSender();
-		FileConfiguration Config = getConfig();
+		ConsoleCommandSender console = Bukkit.getConsoleSender();
+		FileConfiguration config = getConfig();
 
-		if( !Config.isSet( "RotationMessage" ) ) {
+		if( !config.isSet( "RotationMessage" ) ) {
 			getConfig().set( "RotationMessage", "&7&lホットバーをローテーションしました。" );
-			c.sendMessage( "config.yml に RotationMessage が存在しなかったため追加しました。" );
+			console.sendMessage( "config.yml に RotationMessage が存在しなかったため追加しました。" );
 		}
 
-		if( !Config.isSet( "AntiClickSpamDelay" ) ) {
+		if( !config.isSet( "AntiClickSpamDelay" ) ) {
 			getConfig().set( "AntiClickSpamDelay", 50 );
-			c.sendMessage( "config.yml に AntiClickSpamDelay が存在しなかったため追加しました。" );
+			console.sendMessage( "config.yml に AntiClickSpamDelay が存在しなかったため追加しました。" );
 		}
 
 		saveConfig();
