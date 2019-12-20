@@ -1,10 +1,12 @@
 # Rotation Hotbar
-これは Spigot 上で動作する Plugin です。
+これは Spigot 上で動作するプラグインです。
 
 スニーク (Default:[Shift]) しながら、持っているアイテムの切り替え (Default:[F]) をすることで、
 インベントリの全アイテムを 1 段下にローテーションすることができます。
 これにより、インベントリを開くことなく、全ての所持アイテムにアクセスすることができます。
 
-![Demo](./readme_img/demo.gif)
+動作確認済み Minecraft バージョン: **1.12.2, 1.14.4**
 
-Tested Minecraft Versions: 1.12.2
+恐らく対応しているバージョン: **1.9+**
+
+![Demo](./readme_img/demo.gif)
