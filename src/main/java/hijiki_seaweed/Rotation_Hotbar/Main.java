@@ -3,14 +3,12 @@ package hijiki_seaweed.Rotation_Hotbar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,9 +18,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.minecraft.server.v1_12_R1.ChatComponentText;
-import net.minecraft.server.v1_12_R1.ChatMessageType;
-import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 
 /*
  * Main クラス
@@ -32,43 +29,37 @@ public class Main extends JavaPlugin implements Listener {
 	/*
 	 * メンバー変数の宣言
 	 */
-	private static Map<Player, Long> antiClickSpamDelay = new HashMap<Player, Long>(); // 連打防止用
+	private Map<Player, Long> antiClickSpamDelay = new HashMap<Player, Long>(); // 連打防止用
 
 	/*
 	 * プラグインが Load されたとき
 	 */
+	@Override
 	public void onEnable() {
 		this.saveDefaultConfig();
-		ConsoleCommandSender console = Bukkit.getConsoleSender();
-		FileConfiguration config = getConfig();
+		ConsoleCommandSender console = this.getServer().getConsoleSender();
+		FileConfiguration config = this.getConfig();
 
 		if( !config.isSet( "RotationMessage" ) ) {
-			getConfig().set( "RotationMessage", "&7&lホットバーをローテーションしました。" );
+			this.getConfig().set( "RotationMessage", "&7&lホットバーをローテーションしました。" );
 			console.sendMessage( "config.yml に RotationMessage が存在しなかったため追加しました。" );
 		}
 
 		if( !config.isSet( "AntiClickSpamDelay" ) ) {
-			getConfig().set( "AntiClickSpamDelay", 50 );
+			this.getConfig().set( "AntiClickSpamDelay", 50 );
 			console.sendMessage( "config.yml に AntiClickSpamDelay が存在しなかったため追加しました。" );
 		}
 
-		saveConfig();
+		this.saveConfig();
 
-		Bukkit.getPluginManager().registerEvents( this, this );
-	}
-
-	/*
-	 * プラグインが Unload されたとき
-	 */
-	public void onDisable() {
-		// null
+		this.getServer().getPluginManager().registerEvents( this, this );
 	}
 
 	/*
 	 * プレイヤーがメインハンドとオフハンドのアイテムを入れ替えた時 (F キー)
 	 */
 	@EventHandler( priority = EventPriority.HIGHEST )
-	public void onSwapHandItem( final PlayerSwapHandItemsEvent e ) {
+	public void onSwapHandItem( PlayerSwapHandItemsEvent e ) {
 		Player player = e.getPlayer();
 
 		// スニークしているか
@@ -82,12 +73,12 @@ public class Main extends JavaPlugin implements Listener {
 			// 連打を防止
 			Long now = System.currentTimeMillis();
 			int minDelay = getConfig().getInt( "AntiClickSpamDelay" );
-			Long coolDownUntil = antiClickSpamDelay.get( player );
+			Long coolDownUntil = this.antiClickSpamDelay.get( player );
 			if( minDelay > 0 ) {
 				if( coolDownUntil != null && coolDownUntil > now ) {
 					return;
 				} else {
-					antiClickSpamDelay.put( player, now + minDelay );
+					this.antiClickSpamDelay.put( player, now + minDelay );
 				}
 			}
 
@@ -118,9 +109,9 @@ public class Main extends JavaPlugin implements Listener {
 			world.playSound( player.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1.0f, 1.0f );
 
 			// メッセージ表示
-			String rotationMessage = format( getConfig().getString( "RotationMessage" ) );
+			String rotationMessage = this.format( getConfig().getString( "RotationMessage" ) );
 			if( rotationMessage.length() > 0 ) {
-				sendActionBar( player, rotationMessage );
+				this.sendActionBar( player, rotationMessage );
 			}
 		}
 		return;
@@ -129,15 +120,14 @@ public class Main extends JavaPlugin implements Listener {
 	/*
 	 * 文字列を Minecraft 内で使用できる形に整形する
 	 */
-	private static String format( String format ) {
+	private String format( String format ) {
 		return ChatColor.translateAlternateColorCodes( '&', format );
 	}
 
 	/*
 	 * 指定した player の ActionBar に Message を送信する
 	 */
-	private static void sendActionBar( Player player, String message ) {
-		PacketPlayOutChat packet = new PacketPlayOutChat( new ChatComponentText( message ), ChatMessageType.GAME_INFO );
-		((CraftPlayer) player ).getHandle().playerConnection.sendPacket( packet );
+	private void sendActionBar( Player player, String message ) {
+		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', message)));
 	}
 }
